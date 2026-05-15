@@ -1029,6 +1029,41 @@ def build_group_overall_stats_rows(
     ]
 
 
+def build_larpq_win_loss_count_rows(
+    query_type_ids: list[int],
+    metas: dict[int, QueryTypeMeta],
+    better_by_type: dict[int, list[int]],
+    worse_by_type: dict[int, list[int]],
+) -> list[list[str]]:
+    rows: list[list[str]] = []
+    total_better = 0
+    total_worse = 0
+
+    for query_type_id in query_type_ids:
+        better_count = len(better_by_type.get(query_type_id, []))
+        worse_count = len(worse_by_type.get(query_type_id, []))
+        total_better += better_count
+        total_worse += worse_count
+        rows.append(
+            [
+                metas[query_type_id].label,
+                str(better_count),
+                str(worse_count),
+                str(better_count + worse_count),
+            ]
+        )
+
+    rows.append(
+        [
+            "Total",
+            str(total_better),
+            str(total_worse),
+            str(total_better + total_worse),
+        ]
+    )
+    return rows
+
+
 def write_summary_csv(
     path: Path,
     query_type_ids: list[int],
@@ -1324,6 +1359,19 @@ def main() -> int:
     worse_overall_path = args.out_dir / f"{args.prefix}_larpq_worse_overall.txt"
     worse_overall_path.write_text(worse_overall_text, encoding="utf-8")
 
+    win_loss_counts_text = render_text_table(
+        ["Query", "LARPQ better", "LARPQ worse", "Compared variants"],
+        build_larpq_win_loss_count_rows(
+            query_type_ids,
+            metas,
+            larpq_better_by_type,
+            larpq_worse_by_type,
+        ),
+        title="RPQBench LARPQ Better/Worse Counts",
+    )
+    win_loss_counts_path = args.out_dir / f"{args.prefix}_larpq_better_worse_counts.txt"
+    win_loss_counts_path.write_text(win_loss_counts_text, encoding="utf-8")
+
     details_dir = args.out_dir / f"{args.prefix}_details"
     details_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1366,6 +1414,7 @@ def main() -> int:
     print(f"  {better_overall_path}")
     print(f"  {worse_summary_path}")
     print(f"  {worse_overall_path}")
+    print(f"  {win_loss_counts_path}")
     print(f"  {combined_details_path}")
     print(f"  {details_dir}")
     print(f"  {warnings_path}")

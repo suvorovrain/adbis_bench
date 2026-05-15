@@ -1,0 +1,30 @@
+RPQBench LARPQ Better/Worse Counts
+==================================
+
+All execution times below are in milliseconds (ms).
+
+Query           | LARPQ better | LARPQ worse | Compared variants
+----------------+--------------+-------------+------------------
+R/C/K           | 0            | 10          | 10               
+R/C/K           | 2            | 8           | 10               
+(R/C/K)|(K/A/A) | 10           | 0           | 10               
+(R/C/K)|(K/A/A) | 3            | 7           | 10               
+(A)*            | 0            | 10          | 10               
+(A)*            | 0            | 10          | 10               
+(A)*/P          | 0            | 10          | 10               
+(A)*/P          | 0            | 10          | 10               
+(A)+            | 0            | 10          | 10               
+(A)+            | 0            | 10          | 10               
+(R/C)*          | 0            | 10          | 10               
+(R/C)*          | 0            | 10          | 10               
+PO/E/(P|A)      | 10           | 0           | 10               
+PO/E/(P|A)      | 0            | 10          | 10               
+PO/E/(P|A)*     | 10           | 0           | 10               
+PO/E/(P|A)*     | 2            | 8           | 10               
+(E|K)/(P|A)     | 8            | 2           | 10               
+(E|K)/(P|A)     | 0            | 10          | 10               
+(E|K)/(P|A)*    | 9            | 1           | 10               
+(E|K)/(P|A)*    | 0            | 10          | 10               
+Total           | 54           | 146         | 200              
+
+* = best result in the row

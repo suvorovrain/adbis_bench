@@ -871,6 +871,41 @@ def auto_falkor_failed_query_ids(
     return sorted((larpq & mdb) - falkor)
 
 
+def infer_semantic(args: argparse.Namespace) -> str:
+    haystacks = [
+        args.prefix,
+        str(args.out_dir),
+        str(args.larpq),
+        str(args.millenniumdb),
+    ]
+    if args.falkordb is not None:
+        haystacks.append(str(args.falkordb))
+
+    joined = " ".join(haystacks).lower().replace("_", "-")
+
+    if "all-shortest" in joined:
+        return "all-shortest"
+    if "trails" in joined:
+        return "trails"
+    if "simple" in joined:
+        return "simple"
+    return "unknown"
+
+
+def cleanup_optional_outputs(args: argparse.Namespace, include_falkor_failed: bool) -> None:
+    if include_falkor_failed:
+        return
+
+    stale_paths = [
+        args.out_dir / f"{args.prefix}_falkor_failed_summary.txt",
+        args.out_dir / f"{args.prefix}_falkor_failed_scatter.png",
+    ]
+
+    for path in stale_paths:
+        if path.exists():
+            path.unlink()
+
+
 # ============================================================
 # Main
 # ============================================================
@@ -922,6 +957,7 @@ def main() -> int:
     args = parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     competitors = active_competitors(args)
+    semantic = infer_semantic(args)
 
     stats_by_competitor: dict[str, dict[int, QueryStats]] = {}
     all_warnings: list[str] = []
@@ -938,30 +974,44 @@ def main() -> int:
         stats_by_competitor[comp] = stats
         all_warnings.extend(warnings)
 
-    common_query_ids = normalize_query_ids(COMMON_SUCCESS_QUERY_IDS)
-    if "FalkorDB" not in competitors:
-        common_query_ids = auto_common_query_ids(stats_by_competitor, competitors)
+    if semantic in ("simple", "all-shortest"):
+        common_query_ids = auto_common_query_ids(
+            stats_by_competitor,
+            ["LARPQ", "MillenniumDB"],
+        )
+        falkor_failed_query_ids: list[int] = []
         print(
-            "INFO: FalkorDB is not provided. Using auto-detected intersection of successful queries "
-            "for active competitors only.",
+            "INFO: For Wikidata simple/all-shortest, using auto-detected queries "
+            "that succeeded on both LARPQ and MillenniumDB only.",
             file=sys.stderr,
         )
-    elif not common_query_ids:
-        common_query_ids = auto_common_query_ids(stats_by_competitor, competitors)
-        print(
-            "WARNING: COMMON_SUCCESS_QUERY_IDS is empty. "
-            "Using auto-detected intersection of successful queries.",
-            file=sys.stderr,
-        )
+    else:
+        common_query_ids = normalize_query_ids(COMMON_SUCCESS_QUERY_IDS)
+        if "FalkorDB" not in competitors:
+            common_query_ids = auto_common_query_ids(stats_by_competitor, competitors)
+            print(
+                "INFO: FalkorDB is not provided. Using auto-detected intersection of successful queries "
+                "for active competitors only.",
+                file=sys.stderr,
+            )
+        elif not common_query_ids:
+            common_query_ids = auto_common_query_ids(stats_by_competitor, competitors)
+            print(
+                "WARNING: COMMON_SUCCESS_QUERY_IDS is empty. "
+                "Using auto-detected intersection of successful queries.",
+                file=sys.stderr,
+            )
 
-    falkor_failed_query_ids = normalize_query_ids(FALKOR_FAILED_QUERY_IDS)
-    if "FalkorDB" in competitors and not falkor_failed_query_ids:
-        falkor_failed_query_ids = auto_falkor_failed_query_ids(stats_by_competitor, competitors)
-        print(
-            "WARNING: FALKOR_FAILED_QUERY_IDS is empty. "
-            "Using auto-detected queries that succeeded on LARPQ and MillenniumDB but not on FalkorDB.",
-            file=sys.stderr,
-        )
+        falkor_failed_query_ids = normalize_query_ids(FALKOR_FAILED_QUERY_IDS)
+        if "FalkorDB" in competitors and not falkor_failed_query_ids:
+            falkor_failed_query_ids = auto_falkor_failed_query_ids(stats_by_competitor, competitors)
+            print(
+                "WARNING: FALKOR_FAILED_QUERY_IDS is empty. "
+                "Using auto-detected queries that succeeded on LARPQ and MillenniumDB but not on FalkorDB.",
+                file=sys.stderr,
+            )
+
+    cleanup_optional_outputs(args, include_falkor_failed=bool(falkor_failed_query_ids))
 
     # ----------------------------
     # Common successful queries
