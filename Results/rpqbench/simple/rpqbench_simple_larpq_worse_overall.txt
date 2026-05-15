@@ -1,0 +1,14 @@
+RPQBench Overall Stats: LARPQ Worse
+===================================
+
+All execution times below are in milliseconds (ms).
+
+metric         | LARPQ | MillenniumDB
+---------------+-------+-------------
+Total, ms      | 4.7   | 2.4         
+Mean, ms       | 0.3   | 0.1         
+Median, ms     | 0.3   | 0.1         
+Mean speedup   | 1.00  | 2.09        
+Median speedup | 1.00  | 2.01        
+
+* = best result in the row

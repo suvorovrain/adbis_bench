@@ -118,6 +118,11 @@ def competitor_time_scale_to_us(competitor: str) -> float:
     return 1.0
 
 
+def is_falkordb_error_row(line: str) -> bool:
+    row = next(csv.reader([line]))
+    return len(row) == 2 and row[1].strip().lower() == "errored"
+
+
 # ============================================================
 # Parsing
 # ============================================================
@@ -198,6 +203,9 @@ def parse_file(path: Optional[Path], competitor: str, strict: bool) -> tuple[dic
             if not line:
                 continue
 
+            if competitor == "FalkorDB" and is_falkordb_error_row(line):
+                continue
+
             try:
                 m = parse_measurement_line(line, line_no)
             except Exception as e:
@@ -224,6 +232,51 @@ def parse_file(path: Optional[Path], competitor: str, strict: bool) -> tuple[dic
             warnings.append(
                 f"{competitor}: query {query_id}: only {len(ms)} occurrence(s), "
                 f"nothing remains after warm-up skip"
+            )
+            continue
+
+        if competitor == "FalkorDB":
+            if len(ms) not in (3, 4):
+                warnings.append(
+                    f"{competitor}: query {query_id}: expected 3 or 4 runs, got {len(ms)}; "
+                    f"will use all runs after warm-up"
+                )
+
+            final_ms = ms[1:]
+            raw_times = [x.time_ms for x in final_ms]
+            used_times, outliers = remove_outliers_20pct(raw_times)
+
+            if not used_times:
+                warnings.append(
+                    f"{competitor}: query {query_id}: no usable times after filtering"
+                )
+                continue
+
+            mean_ms = st.mean(used_times)
+            median_ms = st.median(used_times)
+            rsd_pct = relative_stddev_pct(used_times)
+
+            answers = [x.answer for x in final_ms]
+            answer_counts = Counter(answers)
+            answer, _ = answer_counts.most_common(1)[0]
+            answer_consistent = len(answer_counts) == 1
+
+            if not answer_consistent:
+                warnings.append(
+                    f"{competitor}: query {query_id}: inconsistent answers after warm-up: "
+                    f"{dict(answer_counts)}; using most common answer={answer}"
+                )
+
+            stats[query_id] = QueryStats(
+                query_id=query_id,
+                raw_times_ms=raw_times,
+                used_times_ms=used_times,
+                outlier_times_ms=outliers,
+                mean_ms=mean_ms,
+                median_ms=median_ms,
+                rsd_pct=rsd_pct,
+                answer=answer,
+                answer_consistent=answer_consistent,
             )
             continue
 
@@ -662,6 +715,8 @@ def write_scatter_plot(
     plotted = False
     fig, ax = plt.subplots(figsize=(5.5, 8.4))
     ax.set_facecolor("#fbfbfb")
+    plotted_positions: list[int] = []
+    plotted_labels: list[str] = []
 
     for idx, comp in enumerate(competitors, 1):
         vals = [us_to_ms(v) for v in competitor_values(query_ids, stats_by_competitor, comp)]
@@ -669,6 +724,8 @@ def write_scatter_plot(
             continue
 
         plotted = True
+        plotted_positions.append(idx)
+        plotted_labels.append(comp)
         xs = []
         jitter_pattern = [
             -0.09, -0.075, -0.06, -0.045, -0.03, -0.015, 0.0,
@@ -706,9 +763,9 @@ def write_scatter_plot(
     ax.plot([], [], color="#222222", linewidth=2.2, linestyle=":", label="Mean")
     ax.plot([], [], color="#222222", linewidth=3.0, linestyle="-", label="Median")
 
-    ax.set_xticks(range(1, len(competitors) + 1), competitors)
+    ax.set_xticks(plotted_positions, plotted_labels)
     ax.tick_params(axis="x", rotation=45)
-    ax.set_xlim(0.5, len(competitors) + 0.5)
+    ax.set_xlim(min(plotted_positions) - 0.5, max(plotted_positions) + 0.5)
     ax.set_ylabel("Execution time, ms")
 
     if log_scale:

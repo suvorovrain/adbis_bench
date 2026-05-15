@@ -1,0 +1,29 @@
+RPQBench Summary By Query Type: LARPQ Better
+============================================
+
+All execution times below are in milliseconds (ms).
+
+Query           | LARPQ, ms | MillenniumDB, ms
+----------------+-----------+-----------------
+R/C/K           | -         | -               
+R/C/K           | 1.7 *     | 24.0            
+(R/C/K)|(K/A/A) | 0.3 *     | 1.7             
+(R/C/K)|(K/A/A) | 0.5 *     | 2.3             
+(A)*            | -         | -               
+(A)*            | -         | -               
+(A)*/P          | -         | -               
+(A)*/P          | -         | -               
+(A)+            | -         | -               
+(A)+            | -         | -               
+(R/C)*          | -         | -               
+(R/C)*          | -         | -               
+PO/E/(P|A)      | 401.3 *   | 656.8           
+PO/E/(P|A)      | -         | -               
+PO/E/(P|A)*     | 430.9 *   | 1995.4          
+PO/E/(P|A)*     | 65.7 *    | 511.7           
+(E|K)/(P|A)     | 0.7 *     | 8.9             
+(E|K)/(P|A)     | -         | -               
+(E|K)/(P|A)*    | 0.6 *     | 15.7            
+(E|K)/(P|A)*    | -         | -               
+
+* = best result in the row

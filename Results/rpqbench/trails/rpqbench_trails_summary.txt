@@ -3,13 +3,43 @@ RPQBench Overall Stats
 
 All execution times below are in milliseconds (ms).
 
+metric         | LARPQ | MillenniumDB | FalkorDB
+---------------+-------+--------------+---------
+Total, ms      | 850.7 | 3259.4       | 1685.3  
+Mean, ms       | 42.5  | 163.0        | 105.3   
+Median, ms     | 0.3   | 0.2          | 0.2     
+Mean speedup   | 1.00  | 1.38         | 1.24    
+Median speedup | 1.00  | 1.66         | 1.47    
+
+* = best result in the row
+
+RPQBench Overall Stats: Common To All
+=====================================
+
+All execution times below are in milliseconds (ms).
+
+metric         | LARPQ | MillenniumDB | FalkorDB
+---------------+-------+--------------+---------
+Total, ms      | 849.5 | 3256.5       | 1685.3  
+Mean, ms       | 53.1  | 203.5        | 105.3   
+Median, ms     | 0.3   | 0.2          | 0.2     
+Mean speedup   | 1.00  | 1.45         | 1.24    
+Median speedup | 1.00  | 1.73         | 1.47    
+
+* = best result in the row
+
+RPQBench Overall Stats: Missing On FalkorDB
+===========================================
+
+All execution times below are in milliseconds (ms).
+
 metric         | LARPQ | MillenniumDB
 ---------------+-------+-------------
-Total, ms      | 875.9 | 3259.4      
-Mean, ms       | 43.8  | 163.0       
-Median, ms     | 0.3   | 0.2         
-Mean speedup   | 1.00  | 1.28        
-Median speedup | 1.00  | 1.55        
+Total, ms      | 1.1   | 2.8         
+Mean, ms       | 0.3   | 0.7         
+Median, ms     | 0.3   | 0.3         
+Mean speedup   | 1.00  | 1.07        
+Median speedup | 1.00  | 1.10        
 
 * = best result in the row
 
@@ -18,27 +48,27 @@ RPQBench Summary By Query Type
 
 All execution times below are in milliseconds (ms).
 
-Query           | LARPQ, ms | MillenniumDB, ms
-----------------+-----------+-----------------
-R/C/K           | 0.3       | 0.2 *           
-R/C/K           | 0.6 *     | 6.1             
-(R/C/K)|(K/A/A) | 0.4 *     | 2.0             
-(R/C/K)|(K/A/A) | 0.3 *     | 0.5             
-(A)*            | 0.2       | 0.1 *           
-(A)*            | 0.3       | 0.1 *           
-(A)*/P          | 0.3       | 0.1 *           
-(A)*/P          | 0.2       | 0.1 *           
-(A)+            | 0.2       | 0.1 *           
-(A)+            | 0.2       | 0.1 *           
-(R/C)*          | 0.2       | 0.1 *           
-(R/C)*          | 0.2       | 0.1 *           
-PO/E/(P|A)      | 407.1 *   | 694.1           
-PO/E/(P|A)      | 0.3       | 0.2 *           
-PO/E/(P|A)*     | 442.2 *   | 2328.9          
-PO/E/(P|A)*     | 20.8 *    | 203.0           
-(E|K)/(P|A)     | 0.7 *     | 6.9             
-(E|K)/(P|A)     | 0.3       | 0.2 *           
-(E|K)/(P|A)*    | 0.7 *     | 16.3            
-(E|K)/(P|A)*    | 0.4       | 0.2 *           
+Query           | LARPQ, ms | MillenniumDB, ms | FalkorDB, ms
+----------------+-----------+------------------+-------------
+R/C/K           | 0.3       | 0.2 *            | 0.2         
+R/C/K           | 0.6 *     | 6.1              | 1.3         
+(R/C/K)|(K/A/A) | 0.3 *     | 2.0              | -           
+(R/C/K)|(K/A/A) | 0.3 *     | 0.5              | -           
+(A)*            | 0.2       | 0.1 *            | 0.1         
+(A)*            | 0.3       | 0.1 *            | 0.1         
+(A)*/P          | 0.3       | 0.1 *            | 0.2         
+(A)*/P          | 0.3       | 0.1 *            | 0.2         
+(A)+            | 0.3       | 0.1 *            | 0.1         
+(A)+            | 0.3       | 0.1 *            | 0.1         
+(R/C)*          | 0.3       | 0.1 *            | -           
+(R/C)*          | 0.2       | 0.1 *            | -           
+PO/E/(P|A)      | 396.3 *   | 694.1            | 1075.6      
+PO/E/(P|A)      | 0.3       | 0.2 *            | 0.2         
+PO/E/(P|A)*     | 428.6 *   | 2328.9           | 554.3       
+PO/E/(P|A)*     | 20.1 *    | 203.0            | 36.9        
+(E|K)/(P|A)     | 0.6 *     | 6.9              | 10.8        
+(E|K)/(P|A)     | 0.3       | 0.2 *            | 0.2         
+(E|K)/(P|A)*    | 0.6 *     | 16.3             | 4.7         
+(E|K)/(P|A)*    | 0.4       | 0.2              | 0.2 *       
 
 * = best result in the row

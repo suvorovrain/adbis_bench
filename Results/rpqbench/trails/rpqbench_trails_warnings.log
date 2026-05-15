@@ -8,3 +8,43 @@ MillenniumDB query-type 1 variant 7: expected 5 runs, got 10; using occurrences 
 MillenniumDB query-type 1 variant 8: expected 5 runs, got 10; using occurrences 2..5
 MillenniumDB query-type 1 variant 9: expected 5 runs, got 10; using occurrences 2..5
 MillenniumDB query-type 1 variant 10: expected 5 runs, got 10; using occurrences 2..5
+FalkorDB query-type 3 variant 1: marked as errored
+FalkorDB query-type 3 variant 2: marked as errored
+FalkorDB query-type 3 variant 3: marked as errored
+FalkorDB query-type 3 variant 4: marked as errored
+FalkorDB query-type 3 variant 5: marked as errored
+FalkorDB query-type 3 variant 6: marked as errored
+FalkorDB query-type 3 variant 7: marked as errored
+FalkorDB query-type 3 variant 8: marked as errored
+FalkorDB query-type 3 variant 9: marked as errored
+FalkorDB query-type 3 variant 10: marked as errored
+FalkorDB query-type 4 variant 1: marked as errored
+FalkorDB query-type 4 variant 2: marked as errored
+FalkorDB query-type 4 variant 3: marked as errored
+FalkorDB query-type 4 variant 4: marked as errored
+FalkorDB query-type 4 variant 5: marked as errored
+FalkorDB query-type 4 variant 6: marked as errored
+FalkorDB query-type 4 variant 7: marked as errored
+FalkorDB query-type 4 variant 8: marked as errored
+FalkorDB query-type 4 variant 9: marked as errored
+FalkorDB query-type 4 variant 10: marked as errored
+FalkorDB query-type 11 variant 1: marked as errored
+FalkorDB query-type 11 variant 2: marked as errored
+FalkorDB query-type 11 variant 3: marked as errored
+FalkorDB query-type 11 variant 4: marked as errored
+FalkorDB query-type 11 variant 5: marked as errored
+FalkorDB query-type 11 variant 6: marked as errored
+FalkorDB query-type 11 variant 7: marked as errored
+FalkorDB query-type 11 variant 8: marked as errored
+FalkorDB query-type 11 variant 9: marked as errored
+FalkorDB query-type 11 variant 10: marked as errored
+FalkorDB query-type 12 variant 1: marked as errored
+FalkorDB query-type 12 variant 2: marked as errored
+FalkorDB query-type 12 variant 3: marked as errored
+FalkorDB query-type 12 variant 4: marked as errored
+FalkorDB query-type 12 variant 5: marked as errored
+FalkorDB query-type 12 variant 6: marked as errored
+FalkorDB query-type 12 variant 7: marked as errored
+FalkorDB query-type 12 variant 8: marked as errored
+FalkorDB query-type 12 variant 9: marked as errored
+FalkorDB query-type 12 variant 10: marked as errored

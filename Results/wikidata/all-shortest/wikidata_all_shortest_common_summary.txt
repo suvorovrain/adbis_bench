@@ -7,8 +7,8 @@ Query ids count: 524
 
 metric         | LARPQ       | MillenniumDB
 ---------------+-------------+-------------
-Total, ms      | 225 516.932 | 780 011.068 
-Mean, ms       | 430.376     | 1 488.571   
-Median, ms     | 2.094       | 27.881      
-Mean speedup   | 1.00        | 0.86        
-Median speedup | 1.00        | 0.16        
+Total, ms      | 205 629.757 | 780 011.068 
+Mean, ms       | 392.423     | 1 488.571   
+Median, ms     | 2.014       | 27.881      
+Mean speedup   | 1.00        | 0.83        
+Median speedup | 1.00        | 0.14        

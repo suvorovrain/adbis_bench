@@ -37,6 +37,10 @@ def competitor_time_scale_to_us(competitor: str) -> float:
     return 1.0
 
 
+def competitor_uses_all_runs_after_warmup(competitor: str) -> bool:
+    return competitor == "FalkorDB"
+
+
 @dataclass(frozen=True)
 class VariantStats:
     variant_id: int
@@ -196,6 +200,44 @@ def finalize_variant_stats(
 ) -> Optional[VariantStats]:
     if not times_ms:
         return None
+
+    if competitor_uses_all_runs_after_warmup(competitor):
+        if len(times_ms) < 2:
+            warnings.append(
+                f"{competitor} query-type {query_type_id} variant {variant_id}: "
+                f"only {len(times_ms)} run(s); skipping"
+            )
+            return None
+
+        final_times = times_ms[1:]
+        final_answers = answers[1:]
+
+        if len(times_ms) not in (4, 5):
+            warnings.append(
+                f"{competitor} query-type {query_type_id} variant {variant_id}: "
+                f"expected 4 or 5 runs, got {len(times_ms)}; using all runs after warm-up"
+            )
+
+        used_times, outliers = remove_outliers_20pct(final_times)
+        if not used_times:
+            warnings.append(
+                f"{competitor} query-type {query_type_id} variant {variant_id}: "
+                "no usable times after filtering"
+            )
+            return None
+
+        chosen_answer = next((ans for ans in final_answers if ans not in (None, "")), None)
+
+        return VariantStats(
+            variant_id=variant_id,
+            raw_times_ms=final_times,
+            used_times_ms=used_times,
+            outlier_times_ms=outliers,
+            mean_ms=st.mean(used_times),
+            median_ms=st.median(used_times),
+            rsd_pct=relative_stddev_pct(used_times),
+            answer=chosen_answer,
+        )
 
     expected_runs = competitor_total_runs(competitor)
 
@@ -464,6 +506,90 @@ def parse_csv_type_dir(
     return result
 
 
+def parse_falkor_flat_file(
+    file_path: Path,
+    query_type_id: int,
+    warnings: list[str],
+) -> dict[int, VariantStats]:
+    if not file_path.exists():
+        warnings.append(f"FalkorDB query-type {query_type_id}: file is missing: {file_path}")
+        return {}
+
+    grouped_times: dict[int, list[float]] = defaultdict(list)
+    grouped_answers: dict[int, list[Optional[str]]] = defaultdict(list)
+    errored_variants: set[int] = set()
+    time_scale = competitor_time_scale_to_us("FalkorDB")
+
+    with file_path.open("r", encoding="utf-8") as handle:
+        for line_no, raw_line in enumerate(handle, 1):
+            line = raw_line.strip()
+            if not line:
+                continue
+
+            row = next(csv.reader([line]))
+            if not row:
+                continue
+
+            try:
+                variant_id = int(row[0].strip())
+            except ValueError:
+                warnings.append(
+                    f"FalkorDB query-type {query_type_id}: skip malformed line {line_no} in {file_path.name}: {line!r}"
+                )
+                continue
+
+            lowered = [cell.strip().lower() for cell in row]
+            if any("errored" in cell or cell == "error" for cell in lowered):
+                errored_variants.add(variant_id)
+                continue
+
+            if len(row) != 3:
+                warnings.append(
+                    f"FalkorDB query-type {query_type_id}: skip malformed line {line_no} in {file_path.name}: {line!r}"
+                )
+                continue
+
+            try:
+                time_ms = float(row[1].strip())
+            except ValueError:
+                warnings.append(
+                    f"FalkorDB query-type {query_type_id}: skip malformed line {line_no} in {file_path.name}: {line!r}"
+                )
+                continue
+
+            answer = parse_strict_integer_answer(row[2].strip())
+            if answer is None:
+                warnings.append(
+                    f"FalkorDB query-type {query_type_id}: skip malformed line {line_no} in {file_path.name}: {line!r}"
+                )
+                continue
+
+            grouped_times[variant_id].append(time_ms * time_scale)
+            grouped_answers[variant_id].append(answer)
+
+    result: dict[int, VariantStats] = {}
+    variant_ids = sorted(set(grouped_times) | errored_variants)
+    for variant_id in variant_ids:
+        if variant_id in errored_variants and variant_id not in grouped_times:
+            warnings.append(
+                f"FalkorDB query-type {query_type_id} variant {variant_id}: marked as errored"
+            )
+            continue
+
+        stats = finalize_variant_stats(
+            "FalkorDB",
+            query_type_id,
+            variant_id,
+            grouped_times[variant_id],
+            grouped_answers[variant_id],
+            warnings,
+        )
+        if stats is not None:
+            result[variant_id] = stats
+
+    return result
+
+
 def parse_competitor_root(
     root: Optional[Path],
     competitor: str,
@@ -484,6 +610,8 @@ def parse_competitor_root(
         type_dir = root / f"{query_type_id}.txt"
         if competitor == "LARPQ":
             stats_by_type[query_type_id] = parse_larpq_type_dir(type_dir, query_type_id, warnings)
+        elif competitor == "FalkorDB" and type_dir.is_file():
+            stats_by_type[query_type_id] = parse_falkor_flat_file(type_dir, query_type_id, warnings)
         else:
             stats_by_type[query_type_id] = parse_csv_type_dir(type_dir, competitor, query_type_id, warnings)
 
@@ -502,7 +630,7 @@ def discover_query_type_ids(
         if root is None or not root.exists():
             return
         for child in root.iterdir():
-            if child.is_dir() and child.name.endswith(".txt"):
+            if child.name.endswith(".txt"):
                 stem = child.name[:-4]
                 if stem.isdigit():
                     found.add(int(stem))
@@ -626,6 +754,35 @@ def build_overall_stats_rows(
     ]
 
 
+def query_type_ids_common_to_all(
+    query_type_ids: list[int],
+    stats_by_competitor: dict[str, dict[int, dict[int, VariantStats]]],
+    competitors: list[str],
+) -> list[int]:
+    result: list[int] = []
+    for query_type_id in query_type_ids:
+        if all(
+            query_type_mean(stats_by_competitor.get(competitor, {}).get(query_type_id, {})) is not None
+            for competitor in competitors
+        ):
+            result.append(query_type_id)
+    return result
+
+
+def query_type_ids_missing_on_falkor(
+    query_type_ids: list[int],
+    stats_by_competitor: dict[str, dict[int, dict[int, VariantStats]]],
+) -> list[int]:
+    result: list[int] = []
+    for query_type_id in query_type_ids:
+        larpq_val = query_type_mean(stats_by_competitor.get("LARPQ", {}).get(query_type_id, {}))
+        mdb_val = query_type_mean(stats_by_competitor.get("MillenniumDB", {}).get(query_type_id, {}))
+        falkor_val = query_type_mean(stats_by_competitor.get("FalkorDB", {}).get(query_type_id, {}))
+        if larpq_val is not None and mdb_val is not None and falkor_val is None:
+            result.append(query_type_id)
+    return result
+
+
 def render_text_table(headers: list[str], rows: list[list[str]], title: Optional[str] = None) -> str:
     table = [headers] + rows
     widths = [
@@ -688,6 +845,188 @@ def build_detail_rows(
         rows.append(row)
 
     return rows
+
+
+def classify_larpq_variant_groups(
+    query_type_ids: list[int],
+    stats_by_competitor: dict[str, dict[int, dict[int, VariantStats]]],
+    competitors: list[str],
+) -> tuple[dict[int, list[int]], dict[int, list[int]]]:
+    better_by_type: dict[int, list[int]] = {}
+    worse_by_type: dict[int, list[int]] = {}
+
+    for query_type_id in query_type_ids:
+        variant_ids = sorted(
+            set().union(
+                *[
+                    set(stats_by_competitor.get(competitor, {}).get(query_type_id, {}))
+                    for competitor in competitors
+                ]
+            )
+        )
+
+        better: list[int] = []
+        worse: list[int] = []
+
+        for variant_id in variant_ids:
+            larpq_stats = stats_by_competitor.get("LARPQ", {}).get(query_type_id, {}).get(variant_id)
+            if larpq_stats is None:
+                continue
+
+            values: dict[str, float] = {}
+            for competitor in competitors:
+                variant_stats = stats_by_competitor.get(competitor, {}).get(query_type_id, {}).get(variant_id)
+                if variant_stats is not None:
+                    values[competitor] = variant_stats.mean_ms
+
+            if len(values) <= 1:
+                continue
+
+            best_value = min(values.values())
+            if abs(values["LARPQ"] - best_value) <= 1e-9:
+                better.append(variant_id)
+            else:
+                worse.append(variant_id)
+
+        better_by_type[query_type_id] = better
+        worse_by_type[query_type_id] = worse
+
+    return better_by_type, worse_by_type
+
+
+def query_type_mean_for_variants(
+    stats: dict[int, VariantStats],
+    variant_ids: list[int],
+) -> Optional[float]:
+    values = [stats[variant_id].mean_ms for variant_id in variant_ids if variant_id in stats]
+    if not values:
+        return None
+    return st.mean(values)
+
+
+def build_group_summary_rows(
+    query_type_ids: list[int],
+    metas: dict[int, QueryTypeMeta],
+    stats_by_competitor: dict[str, dict[int, dict[int, VariantStats]]],
+    competitors: list[str],
+    variant_ids_by_type: dict[int, list[int]],
+) -> list[list[str]]:
+    rows: list[list[str]] = []
+
+    for query_type_id in query_type_ids:
+        row = [metas[query_type_id].label]
+        selected_variant_ids = variant_ids_by_type.get(query_type_id, [])
+        numeric_values: dict[str, float] = {}
+
+        for competitor in competitors:
+            stats = stats_by_competitor.get(competitor, {}).get(query_type_id, {})
+            mean_value = query_type_mean_for_variants(stats, selected_variant_ids)
+            if mean_value is not None:
+                numeric_values[competitor] = mean_value
+
+        if not numeric_values:
+            row.extend("-" for _ in competitors)
+            rows.append(row)
+            continue
+
+        best_value = min(numeric_values.values())
+        for competitor in competitors:
+            value = numeric_values.get(competitor)
+            rendered = fmt_time_ms(value)
+            if value is not None and abs(value - best_value) <= 1e-9:
+                rendered = rendered + " *"
+            row.append(rendered)
+
+        rows.append(row)
+
+    return rows
+
+
+def group_speedups_vs_larpq(
+    query_type_ids: list[int],
+    stats_by_competitor: dict[str, dict[int, dict[int, VariantStats]]],
+    competitors: list[str],
+    competitor: str,
+    variant_ids_by_type: dict[int, list[int]],
+) -> list[float]:
+    if competitor == "LARPQ":
+        return [1.0]
+
+    result: list[float] = []
+    for query_type_id in query_type_ids:
+        selected_variant_ids = variant_ids_by_type.get(query_type_id, [])
+        if not selected_variant_ids:
+            continue
+
+        larpq_val = query_type_mean_for_variants(
+            stats_by_competitor.get("LARPQ", {}).get(query_type_id, {}),
+            selected_variant_ids,
+        )
+        other_val = query_type_mean_for_variants(
+            stats_by_competitor.get(competitor, {}).get(query_type_id, {}),
+            selected_variant_ids,
+        )
+        if larpq_val is None or other_val is None or other_val <= 0:
+            continue
+        result.append(larpq_val / other_val)
+    return result
+
+
+def build_group_overall_stats_rows(
+    query_type_ids: list[int],
+    stats_by_competitor: dict[str, dict[int, dict[int, VariantStats]]],
+    competitors: list[str],
+    variant_ids_by_type: dict[int, list[int]],
+) -> list[list[str]]:
+    totals: dict[str, Optional[float]] = {}
+    means: dict[str, Optional[float]] = {}
+    medians: dict[str, Optional[float]] = {}
+    mean_speedups: dict[str, Optional[float]] = {}
+    median_speedups: dict[str, Optional[float]] = {}
+
+    for competitor in competitors:
+        vals: list[float] = []
+        for query_type_id in query_type_ids:
+            selected_variant_ids = variant_ids_by_type.get(query_type_id, [])
+            if not selected_variant_ids:
+                continue
+            value = query_type_mean_for_variants(
+                stats_by_competitor.get(competitor, {}).get(query_type_id, {}),
+                selected_variant_ids,
+            )
+            if value is not None:
+                vals.append(value)
+
+        if vals:
+            totals[competitor] = sum(vals)
+            means[competitor] = st.mean(vals)
+            medians[competitor] = st.median(vals)
+        else:
+            totals[competitor] = None
+            means[competitor] = None
+            medians[competitor] = None
+
+        sp = group_speedups_vs_larpq(
+            query_type_ids,
+            stats_by_competitor,
+            competitors,
+            competitor,
+            variant_ids_by_type,
+        )
+        if sp:
+            mean_speedups[competitor] = st.mean(sp)
+            median_speedups[competitor] = st.median(sp)
+        else:
+            mean_speedups[competitor] = None
+            median_speedups[competitor] = None
+
+    return [
+        ["Total, ms"] + [fmt_time_ms(totals[c]) for c in competitors],
+        ["Mean, ms"] + [fmt_time_ms(means[c]) for c in competitors],
+        ["Median, ms"] + [fmt_time_ms(medians[c]) for c in competitors],
+        ["Mean speedup"] + [fmt_ms(mean_speedups[c], 2) for c in competitors],
+        ["Median speedup"] + [fmt_ms(median_speedups[c], 2) for c in competitors],
+    ]
 
 
 def write_summary_csv(
@@ -880,8 +1219,39 @@ def main() -> int:
         stats_by_competitor[competitor] = stats
         all_warnings.extend(warnings)
 
+    overall_sections: list[str] = []
+
     overall_rows = build_overall_stats_rows(query_type_ids, stats_by_competitor, competitors)
-    overall_text = render_text_table(["metric"] + competitors, overall_rows, title="RPQBench Overall Stats")
+    overall_sections.append(
+        render_text_table(["metric"] + competitors, overall_rows, title="RPQBench Overall Stats")
+    )
+
+    if "FalkorDB" in competitors:
+        common_query_type_ids = query_type_ids_common_to_all(query_type_ids, stats_by_competitor, competitors)
+        if common_query_type_ids:
+            overall_sections.append(
+                render_text_table(
+                    ["metric"] + competitors,
+                    build_overall_stats_rows(common_query_type_ids, stats_by_competitor, competitors),
+                    title="RPQBench Overall Stats: Common To All",
+                )
+            )
+
+        missing_on_falkor_query_type_ids = query_type_ids_missing_on_falkor(query_type_ids, stats_by_competitor)
+        if missing_on_falkor_query_type_ids:
+            overall_sections.append(
+                render_text_table(
+                    ["metric", "LARPQ", "MillenniumDB"],
+                    build_overall_stats_rows(
+                        missing_on_falkor_query_type_ids,
+                        stats_by_competitor,
+                        ["LARPQ", "MillenniumDB"],
+                    ),
+                    title="RPQBench Overall Stats: Missing On FalkorDB",
+                )
+            )
+
+    overall_text = "\n".join(overall_sections)
 
     summary_rows = build_summary_rows(query_type_ids, metas, stats_by_competitor, competitors)
     competitor_headers = ["Query"] + [f"{comp}, ms" for comp in competitors]
@@ -893,6 +1263,66 @@ def main() -> int:
 
     summary_text_path = args.out_dir / f"{args.prefix}_summary.txt"
     summary_text_path.write_text(summary_text, encoding="utf-8")
+
+    larpq_better_by_type, larpq_worse_by_type = classify_larpq_variant_groups(
+        query_type_ids,
+        stats_by_competitor,
+        competitors,
+    )
+
+    better_summary_text = render_text_table(
+        competitor_headers,
+        build_group_summary_rows(
+            query_type_ids,
+            metas,
+            stats_by_competitor,
+            competitors,
+            larpq_better_by_type,
+        ),
+        title="RPQBench Summary By Query Type: LARPQ Better",
+    )
+    better_summary_path = args.out_dir / f"{args.prefix}_larpq_better_by_query_type.txt"
+    better_summary_path.write_text(better_summary_text, encoding="utf-8")
+
+    better_overall_text = render_text_table(
+        ["metric"] + competitors,
+        build_group_overall_stats_rows(
+            query_type_ids,
+            stats_by_competitor,
+            competitors,
+            larpq_better_by_type,
+        ),
+        title="RPQBench Overall Stats: LARPQ Better",
+    )
+    better_overall_path = args.out_dir / f"{args.prefix}_larpq_better_overall.txt"
+    better_overall_path.write_text(better_overall_text, encoding="utf-8")
+
+    worse_summary_text = render_text_table(
+        competitor_headers,
+        build_group_summary_rows(
+            query_type_ids,
+            metas,
+            stats_by_competitor,
+            competitors,
+            larpq_worse_by_type,
+        ),
+        title="RPQBench Summary By Query Type: LARPQ Worse",
+    )
+    worse_summary_path = args.out_dir / f"{args.prefix}_larpq_worse_by_query_type.txt"
+    worse_summary_path.write_text(worse_summary_text, encoding="utf-8")
+
+    worse_overall_text = render_text_table(
+        ["metric"] + competitors,
+        build_group_overall_stats_rows(
+            query_type_ids,
+            stats_by_competitor,
+            competitors,
+            larpq_worse_by_type,
+        ),
+        title="RPQBench Overall Stats: LARPQ Worse",
+    )
+    worse_overall_path = args.out_dir / f"{args.prefix}_larpq_worse_overall.txt"
+    worse_overall_path.write_text(worse_overall_text, encoding="utf-8")
 
     details_dir = args.out_dir / f"{args.prefix}_details"
     details_dir.mkdir(parents=True, exist_ok=True)
@@ -932,6 +1362,10 @@ def main() -> int:
 
     print("Generated files:")
     print(f"  {summary_text_path}")
+    print(f"  {better_summary_path}")
+    print(f"  {better_overall_path}")
+    print(f"  {worse_summary_path}")
+    print(f"  {worse_overall_path}")
     print(f"  {combined_details_path}")
     print(f"  {details_dir}")
     print(f"  {warnings_path}")

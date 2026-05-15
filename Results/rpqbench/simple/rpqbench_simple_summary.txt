@@ -5,11 +5,11 @@ All execution times below are in milliseconds (ms).
 
 metric         | LARPQ | MillenniumDB
 ---------------+-------+-------------
-Total, ms      | 881.7 | 2835.7      
-Mean, ms       | 44.1  | 141.8       
+Total, ms      | 857.7 | 2835.7      
+Mean, ms       | 42.9  | 141.8       
 Median, ms     | 0.3   | 0.2         
-Mean speedup   | 1.00  | 1.41        
-Median speedup | 1.00  | 1.73        
+Mean speedup   | 1.00  | 1.50        
+Median speedup | 1.00  | 1.75        
 
 * = best result in the row
 
@@ -20,23 +20,23 @@ All execution times below are in milliseconds (ms).
 
 Query           | LARPQ, ms | MillenniumDB, ms
 ----------------+-----------+-----------------
-R/C/K           | 0.2       | 0.1 *           
-R/C/K           | 0.6 *     | 4.9             
-(R/C/K)|(K/A/A) | 0.4 *     | 1.7             
+R/C/K           | 0.3       | 0.1 *           
+R/C/K           | 0.5 *     | 4.9             
+(R/C/K)|(K/A/A) | 0.3 *     | 1.7             
 (R/C/K)|(K/A/A) | 0.3 *     | 0.4             
 (A)*            | 0.2       | 0.1 *           
 (A)*            | 0.3       | 0.1 *           
 (A)*/P          | 0.3       | 0.1 *           
 (A)*/P          | 0.2       | 0.1 *           
-(A)+            | 0.2       | 0.1 *           
-(A)+            | 0.2       | 0.1 *           
+(A)+            | 0.3       | 0.1 *           
+(A)+            | 0.3       | 0.1 *           
 (R/C)*          | 0.2       | 0.1 *           
-(R/C)*          | 0.2       | 0.1 *           
-PO/E/(P|A)      | 410.3 *   | 656.8           
+(R/C)*          | 0.3       | 0.1 *           
+PO/E/(P|A)      | 401.3 *   | 656.8           
 PO/E/(P|A)      | 0.3       | 0.2 *           
-PO/E/(P|A)*     | 445.0 *   | 1995.4          
-PO/E/(P|A)*     | 20.6 *    | 153.6           
-(E|K)/(P|A)     | 0.8 *     | 7.2             
+PO/E/(P|A)*     | 430.9 *   | 1995.4          
+PO/E/(P|A)*     | 19.9 *    | 153.6           
+(E|K)/(P|A)     | 0.6 *     | 7.2             
 (E|K)/(P|A)     | 0.3       | 0.2 *           
 (E|K)/(P|A)*    | 0.6 *     | 14.2            
 (E|K)/(P|A)*    | 0.4       | 0.2 *           
