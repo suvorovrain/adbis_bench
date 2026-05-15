@@ -1,0 +1,14 @@
+Queries failed on FalkorDB
+==========================
+
+All execution times below are in milliseconds (ms).
+
+Query ids count: 32
+
+metric         | LARPQ      | MillenniumDB
+---------------+------------+-------------
+Total, ms      | 41 458.721 | 124 497.453 
+Mean, ms       | 1 295.585  | 3 890.545   
+Median, ms     | 14.654     | 202.415     
+Mean speedup   | 1.00       | 0.50        
+Median speedup | 1.00       | 0.20        

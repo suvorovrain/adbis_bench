@@ -1,0 +1,19 @@
+Query type 4: (R/C/K)|(K/A/A)
+=============================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.4 *     | 2.3             
+2       | 0.2       | 0.2 *           
+3       | 0.2       | 0.2 *           
+4       | 0.3       | 0.2 *           
+5       | 0.3       | 0.2 *           
+6       | 0.3       | 0.2 *           
+7       | 0.3       | 0.2 *           
+8       | 0.3       | 0.2 *           
+9       | 0.3       | 0.2 *           
+10      | 0.3       | 0.2 *           
+
+* = best result in the row

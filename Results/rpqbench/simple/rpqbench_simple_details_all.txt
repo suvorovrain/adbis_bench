@@ -1,0 +1,400 @@
+Query type 1: R/C/K
+===================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.2       | 0.2 *           
+3       | 0.3       | 0.1 *           
+4       | 0.2       | 0.1 *           
+5       | 0.2       | 0.2 *           
+6       | 0.3       | 0.1 *           
+7       | 0.3       | 0.1 *           
+8       | 0.2       | 0.1 *           
+9       | 0.2       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 2: R/C/K
+===================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.3       | 0.1 *           
+3       | 0.3       | 0.1 *           
+4       | 0.2       | 0.1 *           
+5       | 0.3       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 1.3 *     | 18.0            
+8       | 0.3       | 0.1 *           
+9       | 3.1 *     | 30.0            
+10      | 0.3       | 0.2 *           
+
+* = best result in the row
+
+Query type 3: (R/C/K)|(K/A/A)
+=============================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.3 *     | 0.4             
+2       | 0.3 *     | 0.5             
+3       | 0.3 *     | 0.5             
+4       | 0.3 *     | 0.5             
+5       | 0.3 *     | 0.5             
+6       | 0.3 *     | 0.5             
+7       | 0.3 *     | 0.4             
+8       | 0.3 *     | 0.4             
+9       | 0.9 *     | 12.6            
+10      | 0.3 *     | 0.4             
+
+* = best result in the row
+
+Query type 4: (R/C/K)|(K/A/A)
+=============================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.4 *     | 2.3             
+2       | 0.2       | 0.2 *           
+3       | 0.2       | 0.2 *           
+4       | 0.3       | 0.2 *           
+5       | 0.3       | 0.2 *           
+6       | 0.3       | 0.2 *           
+7       | 0.3       | 0.2 *           
+8       | 0.3       | 0.2 *           
+9       | 0.3       | 0.2 *           
+10      | 0.3       | 0.2 *           
+
+* = best result in the row
+
+Query type 5: (A)*
+==================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.2       | 0.1 *           
+3       | 0.2       | 0.1 *           
+4       | 0.2       | 0.1 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.2       | 0.1 *           
+8       | 0.2       | 0.1 *           
+9       | 0.2       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 6: (A)*
+==================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.4       | 0.2 *           
+3       | 0.2       | 0.1 *           
+4       | 0.3       | 0.2 *           
+5       | 0.3       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.3       | 0.1 *           
+8       | 0.3       | 0.1 *           
+9       | 0.2       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 7: (A)*/P
+====================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.3       | 0.1 *           
+2       | 0.2       | 0.1 *           
+3       | 0.3       | 0.1 *           
+4       | 0.3       | 0.1 *           
+5       | 0.3       | 0.1 *           
+6       | 0.3       | 0.1 *           
+7       | 0.3       | 0.1 *           
+8       | 0.3       | 0.1 *           
+9       | 0.3       | 0.1 *           
+10      | 0.5       | 0.1 *           
+
+* = best result in the row
+
+Query type 8: (A)*/P
+====================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.2       | 0.1 *           
+3       | 0.2       | 0.1 *           
+4       | 0.2       | 0.1 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.2       | 0.1 *           
+8       | 0.2       | 0.1 *           
+9       | 0.2       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 9: (A)+
+==================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.3       | 0.1 *           
+3       | 0.3       | 0.1 *           
+4       | 0.2       | 0.1 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.2       | 0.1 *           
+8       | 0.2       | 0.1 *           
+9       | 0.2       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 10: (A)+
+===================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.2       | 0.1 *           
+3       | 0.2       | 0.1 *           
+4       | 0.3       | 0.1 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.2       | 0.1 *           
+8       | 0.2       | 0.1 *           
+9       | 0.2       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 11: (R/C)*
+=====================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.2       | 0.1 *           
+3       | 0.2       | 0.1 *           
+4       | 0.2       | 0.1 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.2       | 0.1 *           
+8       | 0.2       | 0.1 *           
+9       | 0.3       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 12: (R/C)*
+=====================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.1 *           
+2       | 0.2       | 0.2 *           
+3       | 0.2       | 0.1 *           
+4       | 0.2       | 0.2 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.2       | 0.1 *           
+8       | 0.2       | 0.1 *           
+9       | 0.2       | 0.1 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 13: PO/E/(P|A)
+=========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 449.7 *   | 716.1           
+2       | 415.6 *   | 684.8           
+3       | 417.9 *   | 693.8           
+4       | 408.6 *   | 643.0           
+5       | 454.4 *   | 705.7           
+6       | 445.9 *   | 697.9           
+7       | 307.8 *   | 581.5           
+8       | 402.2 *   | 630.9           
+9       | 395.4 *   | 587.4           
+10      | 405.2 *   | 627.4           
+
+* = best result in the row
+
+Query type 14: PO/E/(P|A)
+=========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.3       | 0.1 *           
+2       | 0.3       | 0.2 *           
+3       | 0.2       | 0.2 *           
+4       | 0.3       | 0.1 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.3       | 0.1 *           
+8       | 0.3       | 0.1 *           
+9       | 0.2       | 0.2 *           
+10      | 0.3       | 0.2 *           
+
+* = best result in the row
+
+Query type 15: PO/E/(P|A)*
+==========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 504.3 *   | 2171.1          
+2       | 459.9 *   | 2091.1          
+3       | 432.0 *   | 1906.3          
+4       | 492.6 *   | 2157.0          
+5       | 442.0 *   | 1995.3          
+6       | 452.3 *   | 2042.3          
+7       | 515.3 *   | 2308.9          
+8       | 456.0 *   | 2073.4          
+9       | 444.2 *   | 1973.9          
+10      | 251.2 *   | 1235.0          
+
+* = best result in the row
+
+Query type 16: PO/E/(P|A)*
+==========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.2 *           
+2       | 0.2       | 0.2 *           
+3       | 204.1 *   | 1533.8          
+4       | 0.3       | 0.2 *           
+5       | 0.2 *     | 0.3             
+6       | 0.2       | 0.2 *           
+7       | 0.2       | 0.2 *           
+8       | 0.2       | 0.2 *           
+9       | 0.5 *     | 1.1             
+10      | 0.2       | 0.2 *           
+
+* = best result in the row
+
+Query type 17: (E|K)/(P|A)
+==========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 1.0 *     | 10.7            
+2       | 0.4 *     | 1.0             
+3       | 1.1 *     | 11.1            
+4       | 1.1 *     | 12.3            
+5       | 1.0 *     | 11.7            
+6       | 1.0 *     | 11.7            
+7       | 0.3       | 0.2 *           
+8       | 1.2 *     | 12.2            
+9       | 0.3 *     | 0.6             
+10      | 0.3       | 0.2 *           
+
+* = best result in the row
+
+Query type 18: (E|K)/(P|A)
+==========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.2       | 0.2 *           
+2       | 0.3       | 0.2 *           
+3       | 0.2       | 0.2 *           
+4       | 0.3       | 0.2 *           
+5       | 0.3       | 0.2 *           
+6       | 0.2       | 0.2 *           
+7       | 0.2       | 0.2 *           
+8       | 0.3       | 0.2 *           
+9       | 0.3       | 0.2 *           
+10      | 0.2       | 0.1 *           
+
+* = best result in the row
+
+Query type 19: (E|K)/(P|A)*
+===========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.8 *     | 20.3            
+2       | 0.3 *     | 2.0             
+3       | 0.9 *     | 28.3            
+4       | 0.9 *     | 24.2            
+5       | 0.3 *     | 0.4             
+6       | 0.9 *     | 25.8            
+7       | 0.3       | 0.2 *           
+8       | 0.4 *     | 5.1             
+9       | 0.4 *     | 6.7             
+10      | 0.9 *     | 28.9            
+
+* = best result in the row
+
+Query type 20: (E|K)/(P|A)*
+===========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.3       | 0.2 *           
+2       | 0.3       | 0.2 *           
+3       | 0.4       | 0.3 *           
+4       | 0.3       | 0.2 *           
+5       | 0.3       | 0.2 *           
+6       | 0.3       | 0.2 *           
+7       | 1.2       | 0.2 *           
+8       | 0.3       | 0.2 *           
+9       | 0.5       | 0.2 *           
+10      | 0.4       | 0.2 *           
+
+* = best result in the row
+

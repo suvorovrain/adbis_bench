@@ -1,0 +1,44 @@
+RPQBench Overall Stats
+======================
+
+All execution times below are in milliseconds (ms).
+
+metric         | LARPQ | MillenniumDB
+---------------+-------+-------------
+Total, ms      | 875.9 | 3259.4      
+Mean, ms       | 43.8  | 163.0       
+Median, ms     | 0.3   | 0.2         
+Mean speedup   | 1.00  | 1.28        
+Median speedup | 1.00  | 1.55        
+
+* = best result in the row
+
+RPQBench Summary By Query Type
+==============================
+
+All execution times below are in milliseconds (ms).
+
+Query           | LARPQ, ms | MillenniumDB, ms
+----------------+-----------+-----------------
+R/C/K           | 0.3       | 0.2 *           
+R/C/K           | 0.6 *     | 6.1             
+(R/C/K)|(K/A/A) | 0.4 *     | 2.0             
+(R/C/K)|(K/A/A) | 0.3 *     | 0.5             
+(A)*            | 0.2       | 0.1 *           
+(A)*            | 0.3       | 0.1 *           
+(A)*/P          | 0.3       | 0.1 *           
+(A)*/P          | 0.2       | 0.1 *           
+(A)+            | 0.2       | 0.1 *           
+(A)+            | 0.2       | 0.1 *           
+(R/C)*          | 0.2       | 0.1 *           
+(R/C)*          | 0.2       | 0.1 *           
+PO/E/(P|A)      | 407.1 *   | 694.1           
+PO/E/(P|A)      | 0.3       | 0.2 *           
+PO/E/(P|A)*     | 442.2 *   | 2328.9          
+PO/E/(P|A)*     | 20.8 *    | 203.0           
+(E|K)/(P|A)     | 0.7 *     | 6.9             
+(E|K)/(P|A)     | 0.3       | 0.2 *           
+(E|K)/(P|A)*    | 0.7 *     | 16.3            
+(E|K)/(P|A)*    | 0.4       | 0.2 *           
+
+* = best result in the row

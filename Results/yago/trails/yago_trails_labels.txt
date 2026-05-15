@@ -1,0 +1,11 @@
+label | predicate
+------+----------------
+A     | isMarriedTo
+B     | livesIn
+C     | isLocatedIn
+D     | dealsWith
+E     | hasChild
+F     | influences
+G     | hasSuccessor
+H     | hasPredecessor
+I     | hasAcademicAdvisor

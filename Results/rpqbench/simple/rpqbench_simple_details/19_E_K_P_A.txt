@@ -1,0 +1,19 @@
+Query type 19: (E|K)/(P|A)*
+===========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.8 *     | 20.3            
+2       | 0.3 *     | 2.0             
+3       | 0.9 *     | 28.3            
+4       | 0.9 *     | 24.2            
+5       | 0.3 *     | 0.4             
+6       | 0.9 *     | 25.8            
+7       | 0.3       | 0.2 *           
+8       | 0.4 *     | 5.1             
+9       | 0.4 *     | 6.7             
+10      | 0.9 *     | 28.9            
+
+* = best result in the row

@@ -1,0 +1,11 @@
+MillenniumDB 'results before' summary
+===================================
+
+dataset  | semantic     | results before rows | unique query ids
+---------+--------------+---------------------+-----------------
+wikidata | all-shortest | 95                  | 19              
+wikidata | simple       | 196                 | 40              
+wikidata | trails       | 230                 | 46              
+yago     | all-shortest | 0                   | 0               
+yago     | simple       | 25                  | 5               
+yago     | trails       | 25                  | 5               

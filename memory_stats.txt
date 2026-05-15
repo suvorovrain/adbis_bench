@@ -1,0 +1,9 @@
+falkor: 89.8 GB
+
+mdb (A):
+mdb (S):
+mdb (T):
+
+larpq(A): 76.7 GB
+larpq(S): 60.3 GB
+larpq(T): 60.3 GB

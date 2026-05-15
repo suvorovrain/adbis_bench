@@ -1,0 +1,19 @@
+Query type 14: PO/E/(P|A)
+=========================
+
+All execution times below are in milliseconds (ms).
+
+Variant | LARPQ, ms | MillenniumDB, ms
+--------+-----------+-----------------
+1       | 0.3       | 0.1 *           
+2       | 0.3       | 0.2 *           
+3       | 0.2       | 0.2 *           
+4       | 0.3       | 0.1 *           
+5       | 0.2       | 0.1 *           
+6       | 0.2       | 0.1 *           
+7       | 0.3       | 0.1 *           
+8       | 0.3       | 0.1 *           
+9       | 0.2       | 0.2 *           
+10      | 0.3       | 0.2 *           
+
+* = best result in the row

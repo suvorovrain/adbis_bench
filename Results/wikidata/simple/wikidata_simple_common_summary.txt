@@ -1,0 +1,14 @@
+Common successful queries
+=========================
+
+All execution times below are in milliseconds (ms).
+
+Query ids count: 524
+
+metric         | LARPQ       | MillenniumDB 
+---------------+-------------+--------------
+Total, ms      | 228 921.809 | 1 111 429.390
+Mean, ms       | 436.874     | 2 121.048    
+Median, ms     | 1.551       | 35.551       
+Mean speedup   | 1.00        | 0.58         
+Median speedup | 1.00        | 0.11         
